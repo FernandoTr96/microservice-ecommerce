@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,11 +13,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 
 @NullMarked
+@AllArgsConstructor
+@SuppressWarnings("unused")
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     // Inyectamos las variables.
     // La sintaxis es: "${NOMBRE_VARIABLE_EN_SPRING}"
+
     @Value("${spring.data.mongodb.host}")
     private String host;
 

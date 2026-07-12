@@ -2,6 +2,7 @@ package com.ecomerce.ms_products.seeders;
 
 import lombok.RequiredArgsConstructor;
 import com.ecomerce.ms_products.model.Product;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
 import com.ecomerce.ms_products.repository.ProductRepository;
@@ -9,13 +10,15 @@ import com.ecomerce.ms_products.repository.ProductRepository;
 import java.math.BigDecimal;
 
 @Component
+@NullMarked
+@SuppressWarnings("unused")
 @RequiredArgsConstructor
 public class ProductSeeder implements CommandLineRunner {
 
     private final ProductRepository productRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         Product product = Product.builder()
         .name("Samsung Galaxy S24")
