@@ -20,13 +20,13 @@ services:
     environment:
       # Sobrescribimos la config de Spring para usar Docker
       # usamos 'mongodb' en lugar de 'localhost' en nuestros env porque el host es el nombre del container
-      - MONGO_HOST= ${MONGO_HOST}
-      - MONGO_PORT= ${MONGO_PORT}
-      - MONGO_DATABASE= ${MONGO_DATABASE}
-      - MONGO_USERNAME= ${MONGO_USERNAME}
-      - MONGO_PASSWORD= ${MONGO_PASSWORD}
-      - MONGO_AUTH_DB= ${MONGO_AUTH_DB}
-      - SERVER_PORT= ${SERVER_PORT}
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_AUTH_DB=${MONGO_AUTH_DB}
+      - SERVER_PORT=${SERVER_PORT}
     depends_on:
       - mongodb           # Espera a que la BD arranque primero
 
