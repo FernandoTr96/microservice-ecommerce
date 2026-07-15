@@ -1,4 +1,4 @@
-package com.ecomerce.ms_products.seeders;
+package com.ecomerce.ms_products.seeder;
 
 import lombok.RequiredArgsConstructor;
 import com.ecomerce.ms_products.model.Product;
