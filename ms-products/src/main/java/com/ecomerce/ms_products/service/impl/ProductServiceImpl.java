@@ -7,10 +7,12 @@ import com.ecomerce.ms_products.model.Product;
 import com.ecomerce.ms_products.repository.ProductRepository;
 import com.ecomerce.ms_products.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class ProductServiceImpl implements ProductService {
@@ -22,6 +24,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO create(ProductRequestDTO request) {
         Product product = mapper.toModel(request);
         Product createdProduct = repository.save(product);
+        log.info("Product {} saved", createdProduct.getName());
         return mapper.toResponse(createdProduct);
     }
 

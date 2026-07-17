@@ -3,6 +3,7 @@ package com.ecomerce.ms_products.controller;
 import com.ecomerce.ms_products.dto.ProductRequestDTO;
 import com.ecomerce.ms_products.dto.ProductResponseDTO;
 import com.ecomerce.ms_products.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,12 @@ public class ProductController {
 
     @GetMapping("/")
     public String root() {
-        return "ms-products";
+        return "ms-products is working !!";
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponseDTO create(@RequestBody ProductRequestDTO request){
+    public ProductResponseDTO create(@RequestBody @Valid ProductRequestDTO request){
         return productService.create(request);
     }
 
@@ -48,7 +49,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDTO update(@PathVariable String id, @RequestBody ProductRequestDTO request){
+    public ProductResponseDTO update(@PathVariable String id, @RequestBody @Valid  ProductRequestDTO request){
         return productService.update(id,request);
     }
 }
