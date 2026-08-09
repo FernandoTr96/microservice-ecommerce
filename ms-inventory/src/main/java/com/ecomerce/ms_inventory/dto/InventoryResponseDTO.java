@@ -1,11 +1,15 @@
 package com.ecomerce.ms_inventory.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record InventoryResponseDTO(
-        Long id,
-        String sku,
-        Integer quantity,
-        boolean inStock
-) { }
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class InventoryResponseDTO{
+    Long id;
+    String sku;
+    Integer quantity;
+    boolean inStock;
+}
