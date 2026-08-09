@@ -6,5 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 public record InventoryResponseDTO(
         Long id,
         String sku,
-        Integer quantity
+        Integer quantity,
+        boolean inStock
 ) { }
