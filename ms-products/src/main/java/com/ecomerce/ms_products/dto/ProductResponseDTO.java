@@ -6,5 +6,6 @@ public record ProductResponseDTO(
         String id,
         String name,
         String description,
-        BigDecimal price
+        BigDecimal price,
+        boolean inStock
 ) { }
