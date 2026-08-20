@@ -10,6 +10,7 @@ import com.ecomerce.ms_inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,9 +25,13 @@ public class InventoryServiceImpl implements InventoryService {
     InventoryRepository repository;
 
     @Override
+    @Transactional
     public InventoryResponseDTO create(InventoryRequestDTO request) {
+        boolean exists = repository.existsBySku(request.getSku());
+        if(exists) throw new RuntimeException("El inventario para el SKU "+ request.getSku() +" ya existe");
         Inventory inventory = mapper.toModel(request);
         Inventory inventorySaved = repository.save(inventory);
+        log.info("Inventario creado para el SKU: {}", inventorySaved.getSku());
         return mapper.toResponse(inventorySaved);
     }
 
@@ -37,22 +42,30 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public InventoryResponseDTO findById(Long id) {
-        Inventory inventory = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Inventory","id",id.toString()));
+        Inventory inventory = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Inventory","id",id));
         return mapper.toResponse(inventory);
     }
 
     @Override
     public InventoryResponseDTO update(Long id, InventoryRequestDTO request) {
-        Inventory inventory = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Inventory","id",id.toString()));
+        Inventory inventory = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Inventory","id",id));
         mapper.updateFromRequest(request, inventory);
         Inventory inventoryUpdated = repository.save(inventory);
+        log.info("Inventario con SKU {} actualizado", inventoryUpdated.getSku());
         return mapper.toResponse(inventoryUpdated);
     }
 
     @Override
     public InventoryResponseDTO delete(Long id) {
-        Inventory inventory = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Inventory","id",id.toString()));
+        Inventory inventory = repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Inventory","id",id));
         repository.deleteById(inventory.getId());
+        log.info("Inventario con SKU {} eliminado", inventory.getSku());
         return mapper.toResponse(inventory);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean isInStock(String sku, Integer quantity) {
+        return repository.findBySku(sku).map(i-> i.getQuantity() >= quantity).orElse(false);
     }
 }
