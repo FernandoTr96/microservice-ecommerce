@@ -21,8 +21,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class InventoryServiceImpl implements InventoryService {
 
-    InventoryMapper mapper;
-    InventoryRepository repository;
+    private final InventoryMapper mapper;
+    private final InventoryRepository repository;
 
     @Override
     @Transactional

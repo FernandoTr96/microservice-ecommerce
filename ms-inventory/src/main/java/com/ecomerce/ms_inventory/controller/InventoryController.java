@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/inventory")
 public class InventoryController {
     
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
 
     @GetMapping("/")
     public String root() {
@@ -52,7 +52,7 @@ public class InventoryController {
         return inventoryService.update(id,request);
     }
 
-    @GetMapping("/{sku}")
+    @GetMapping("/{sku}/stock")
     @ResponseStatus(HttpStatus.OK)
     public  Boolean inStock(@PathVariable String sku, @RequestParam("quantity") Integer quantity){
         return inventoryService.isInStock(sku, quantity);
