@@ -51,4 +51,29 @@ public class GlobalControllerAdvice {
         problemDetail.setProperty("Timestamp", Instant.now());
         return problemDetail;
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ProblemDetail handleInsufficientStockException(InsufficientStockException e) {
+
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+
+        detail.setTitle("Insufficient Stock");
+        detail.setProperty("Timestamp", Instant.now());
+
+        return detail;
+    }
+
+    @ExceptionHandler(InventoryServiceException.class)
+    public ProblemDetail handleInventoryServiceException(InventoryServiceException e) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                e.getMessage()
+        );
+        detail.setTitle("Inventory Service Unavailable");
+        detail.setProperty("Timestamp", Instant.now());
+        return detail;
+    }
 }

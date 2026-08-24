@@ -2,16 +2,20 @@ package com.ecomerce.ms_orders.service.impl;
 
 import com.ecomerce.ms_orders.dto.OrderRequestDTO;
 import com.ecomerce.ms_orders.dto.OrderResponseDTO;
+import com.ecomerce.ms_orders.exception.InsufficientStockException;
+import com.ecomerce.ms_orders.exception.InventoryServiceException;
 import com.ecomerce.ms_orders.exception.ResourceNotFoundException;
 import com.ecomerce.ms_orders.mapper.OrderMapper;
 import com.ecomerce.ms_orders.model.Order;
-import com.ecomerce.ms_orders.model.OrderLineItems;
 import com.ecomerce.ms_orders.repository.OrderRepository;
 import com.ecomerce.ms_orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,26 +27,33 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final WebClient.Builder webClientBuilder;
 
     @Override
     @Transactional
     public OrderResponseDTO placeOrder(OrderRequestDTO orderRequest) {
         log.info("Colocando nueva orden...");
-
         // Mapeo manual de items para asegurar la lista
-        List<OrderLineItems> orderLineItems = orderRequest.getOrderLineItemsDtoList()
-                .stream()
-                .map(orderMapper::toOrderLineItems)
-                .toList();
-
-        Order order = new Order();
+        Order order = orderMapper.toOrder(orderRequest);
+        for (var item : order.getOrderLineItemsList()){
+            String sku = item.getSku();
+            Integer quantity =  item.getQuantity();
+            try {
+                webClientBuilder.build().put().uri("http://localhost:8082/api/v1/inventory/" + sku + "/reduce", uriBuilder -> uriBuilder.queryParam("quantity", quantity).build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+            }catch (WebClientResponseException e){
+                log.info("Error al reducir stock para el producto {} : {}", sku, e.getMessage());
+                if (e.getStatusCode() == HttpStatus.NOT_FOUND) throw new ResourceNotFoundException("Inventory", "sku", sku);
+                if (e.getStatusCode() == HttpStatus.CONFLICT) throw new InsufficientStockException(sku, quantity, quantity);
+                throw new InventoryServiceException(sku);
+            }
+        }
         order.setOrderNumber(UUID.randomUUID().toString());
-        order.setOrderLineItemsList(orderLineItems);
-
         // Guardamos y capturamos la entidad persistida
         Order savedOrder = orderRepository.save(order);
         log.info("Orden guardada con éxito. ID: {}", savedOrder.getId());
-
         return orderMapper.toOrderResponse(savedOrder);
     }
 
