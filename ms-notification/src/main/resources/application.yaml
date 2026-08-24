@@ -1,3 +1,8 @@
 spring:
   application:
     name: ms-notification
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-stacktrace: never
