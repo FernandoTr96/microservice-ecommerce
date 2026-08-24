@@ -12,6 +12,7 @@ public interface InventoryService {
     InventoryResponseDTO update(Long id, InventoryRequestDTO request);
     InventoryResponseDTO delete(Long id);
     Boolean isInStock(String sku, Integer quantity);
+    void reduceStock(String sku, Integer quantity);
 }
 
 

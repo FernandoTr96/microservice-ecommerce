@@ -46,4 +46,15 @@ public class GlobalControllerAdvice {
         detail.setProperty("Timestamp", Instant.now());
         return detail;
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ProblemDetail handleInsufficientStockException(InsufficientStockException e) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+            HttpStatus.CONFLICT,
+            e.getMessage()
+        );
+        detail.setTitle("Insufficient Stock");
+        detail.setProperty("Timestamp", Instant.now());
+        return detail;
+    }
 }

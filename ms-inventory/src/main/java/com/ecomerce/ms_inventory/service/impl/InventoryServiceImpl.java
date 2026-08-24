@@ -2,6 +2,7 @@ package com.ecomerce.ms_inventory.service.impl;
 
 import com.ecomerce.ms_inventory.dto.InventoryRequestDTO;
 import com.ecomerce.ms_inventory.dto.InventoryResponseDTO;
+import com.ecomerce.ms_inventory.exception.InsufficientStockException;
 import com.ecomerce.ms_inventory.exception.ResourceNotFoundException;
 import com.ecomerce.ms_inventory.mapper.InventoryMapper;
 import com.ecomerce.ms_inventory.model.Inventory;
@@ -67,5 +68,14 @@ public class InventoryServiceImpl implements InventoryService {
     @Transactional(readOnly = true)
     public Boolean isInStock(String sku, Integer quantity) {
         return repository.findBySku(sku).map(i-> i.getQuantity() >= quantity).orElse(false);
+    }
+
+    @Override
+    @Transactional
+    public void reduceStock(String sku, Integer quantity) {
+        var inventory = repository.findBySku(sku).orElseThrow(() -> new ResourceNotFoundException("Inventory", "sku", sku));
+        if (inventory.getQuantity() <= quantity) throw new InsufficientStockException(sku, quantity, inventory.getQuantity());
+        inventory.setQuantity(inventory.getQuantity() - quantity);
+        repository.save(inventory);
     }
 }

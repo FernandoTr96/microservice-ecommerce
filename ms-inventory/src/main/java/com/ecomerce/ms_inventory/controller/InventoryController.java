@@ -57,4 +57,11 @@ public class InventoryController {
     public  Boolean inStock(@PathVariable String sku, @RequestParam("quantity") Integer quantity){
         return inventoryService.isInStock(sku, quantity);
     }
+
+    @PutMapping("/{sku}/reduce")
+    @ResponseStatus(HttpStatus.OK)
+    public String reduceStock(@PathVariable String sku, @RequestParam("quantity") Integer quantity){
+        inventoryService.reduceStock(sku, quantity);
+        return "Stock reducido para el producto: " + sku;
+    }
 }
