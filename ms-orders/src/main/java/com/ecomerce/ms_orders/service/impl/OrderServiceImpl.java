@@ -9,6 +9,7 @@ import com.ecomerce.ms_orders.mapper.OrderMapper;
 import com.ecomerce.ms_orders.model.Order;
 import com.ecomerce.ms_orders.repository.OrderRepository;
 import com.ecomerce.ms_orders.service.OrderService;
+import com.ecomerce.ms_orders.service.client.InventoryClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final WebClient.Builder webClientBuilder;
+    private final InventoryClient inventoryClient;
+//    private final WebClient inventoryBuilder;
 
     @Override
     @Transactional
@@ -39,10 +41,8 @@ public class OrderServiceImpl implements OrderService {
             String sku = item.getSku();
             Integer quantity =  item.getQuantity();
             try {
-                webClientBuilder.build().put().uri("http://localhost:8082/api/v1/inventory/" + sku + "/reduce", uriBuilder -> uriBuilder.queryParam("quantity", quantity).build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+//                inventoryBuilder.put().uri("/api/v1/inventory/" + sku + "/reduce", uriBuilder -> uriBuilder.queryParam("quantity", quantity).build()).retrieve().bodyToMono(String.class).block();
+                inventoryClient.reduceStock(sku, quantity);
             }catch (WebClientResponseException e){
                 log.info("Error al reducir stock para el producto {} : {}", sku, e.getMessage());
                 if (e.getStatusCode() == HttpStatus.NOT_FOUND) throw new ResourceNotFoundException("Inventory", "sku", sku);
