@@ -2,6 +2,7 @@ package com.ecomerce.ms_inventory.service.impl;
 
 import com.ecomerce.ms_inventory.dto.InventoryRequestDTO;
 import com.ecomerce.ms_inventory.dto.InventoryResponseDTO;
+import com.ecomerce.ms_inventory.exception.AlreadyExistsException;
 import com.ecomerce.ms_inventory.exception.InsufficientStockException;
 import com.ecomerce.ms_inventory.exception.ResourceNotFoundException;
 import com.ecomerce.ms_inventory.mapper.InventoryMapper;
@@ -29,7 +30,7 @@ public class InventoryServiceImpl implements InventoryService {
     @Transactional
     public InventoryResponseDTO create(InventoryRequestDTO request) {
         boolean exists = repository.existsBySku(request.getSku());
-        if(exists) throw new RuntimeException("El inventario para el SKU "+ request.getSku() +" ya existe");
+        if(exists) throw new AlreadyExistsException(String.format("Inventory with SKU '%s' already exists", request.getSku()));
         Inventory inventory = mapper.toModel(request);
         Inventory inventorySaved = repository.save(inventory);
         log.info("Inventario creado para el SKU: {}", inventorySaved.getSku());

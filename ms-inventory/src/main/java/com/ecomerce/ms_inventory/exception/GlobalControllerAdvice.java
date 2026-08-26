@@ -57,4 +57,17 @@ public class GlobalControllerAdvice {
         detail.setProperty("Timestamp", Instant.now());
         return detail;
     }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ProblemDetail handleAlreadyExistsException(AlreadyExistsException e) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(
+            HttpStatus.CONFLICT,
+            e.getMessage()
+        );
+
+        detail.setTitle("Already Exists");
+        detail.setProperty("Timestamp", Instant.now());
+
+        return detail;
+    }
 }
