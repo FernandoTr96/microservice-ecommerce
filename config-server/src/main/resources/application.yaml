@@ -6,7 +6,9 @@ spring:
       server:
         git:
           uri: ${CONFIG_SERVER_URI}
+          username: ${CONFIG_SERVER_GITHUB_USER}
+          password: ${CONFIG_SERVER_GITHUB_TOKEN}
           clone-on-start: true
-          default-label: master
+          default-label: main
 server:
   port: ${CONFIG_SERVER_PORT:8888}
