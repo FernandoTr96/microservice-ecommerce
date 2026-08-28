@@ -3,8 +3,11 @@ package com.ecomerce.ms_products.controller;
 import com.ecomerce.ms_products.dto.ProductRequestDTO;
 import com.ecomerce.ms_products.dto.ProductResponseDTO;
 import com.ecomerce.ms_products.service.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +15,13 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @RequiredArgsConstructor
+@RefreshScope
 @RestController
 @RequestMapping("/api/v1/product")
 public class ProductController {
 
+    @Value("${app.maintenance.message: Sistema Operativo}")
+    private String maintenanceMessage;
     private final ProductService productService;
 
     @GetMapping("/")
@@ -31,7 +37,8 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponseDTO> getAll(){
+    public List<ProductResponseDTO> getAll(HttpServletResponse response){
+        response.addHeader("X-Maintenance-Message", maintenanceMessage);
         return productService.list();
     }
 
