@@ -12,6 +12,7 @@ import com.ecomerce.ms_orders.service.OrderService;
 import com.ecomerce.ms_orders.service.client.InventoryClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,9 +32,15 @@ public class OrderServiceImpl implements OrderService {
     private final InventoryClient inventoryClient;
 //    private final WebClient inventoryBuilder;
 
+    @Value("${order.enabled: true}")
+    private boolean enableOrders;
+
     @Override
     @Transactional
     public OrderResponseDTO placeOrder(OrderRequestDTO orderRequest) {
+
+        if(!enableOrders) throw new InventoryServiceException("El servicio de pedidos esta actualmente en mantenimiento");
+
         log.info("Colocando nueva orden...");
         // Mapeo manual de items para asegurar la lista
         Order order = orderMapper.toOrder(orderRequest);
