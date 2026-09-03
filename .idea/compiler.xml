@@ -7,9 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
-        <module name="ms-products" />
         <module name="ms-notification" />
         <module name="discovery-server" />
+        <module name="api-gateway" />
+        <module name="ms-products" />
         <module name="ms-inventory" />
         <module name="ms-orders" />
       </profile>
@@ -17,6 +18,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api-gateway" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
       <module name="ms-inventory" options="-parameters" />

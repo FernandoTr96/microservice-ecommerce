@@ -24,11 +24,6 @@ public class ProductController {
     private String maintenanceMessage;
     private final ProductService productService;
 
-    @GetMapping("/")
-    public String root() {
-        return "ms-products is working !!";
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductResponseDTO create(@RequestBody @Valid ProductRequestDTO request){

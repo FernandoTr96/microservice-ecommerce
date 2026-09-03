@@ -17,11 +17,6 @@ public class InventoryController {
     
     private final InventoryService inventoryService;
 
-    @GetMapping("/")
-    public String root() {
-        return "ms-inventory is working !!";
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InventoryResponseDTO create(@RequestBody @Valid InventoryRequestDTO request){
